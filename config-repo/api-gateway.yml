@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: patient-service
+          uri: lb://PATIENT-SERVICE
+          predicates:
+            - Path=/patient/**
+        - id: doctor-service
+          uri: lb://DOCTOR-SERVICE
+          predicates:
+            - Path=/doctor/**
+        - id: appointment-service
+          uri: lb://APPOINTMENT-SERVICE
+          predicates:
+            - Path=/appointment/**
+  discovery:
+    locator:
+      enabled: true
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: "*"
+      tracing:
+        sampling:
+          probability: 1.0
+
+
+      zipkin:
+        base-url: http://localhost:9411
+      sleuth:
+        sampler:
+          probability: 1.0
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka

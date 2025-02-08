@@ -1,0 +1,20 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\appointment-service",
+    "\\appointment-service\\src",
+    "\\appointment-service\\src\\main",
+    "\\appointment-service\\src\\main\\java",
+    "\\appointment-service\\src\\main\\java\\com",
+    "\\appointment-service\\src\\main\\java\\com\\example",
+    "\\appointment-service\\src\\main\\java\\com\\example\\appointment_service",
+    "\\appointment-service\\src\\main\\java\\com\\example\\appointment_service\\controller",
+    "\\appointment-service\\src\\test",
+    "\\appointment-service\\src\\test\\java",
+    "\\appointment-service\\src\\test\\java\\com",
+    "\\appointment-service\\src\\test\\java\\com\\example",
+    "\\appointment-service\\src\\test\\java\\com\\example\\appointment_service"
+  ],
+  "SelectedNode": "\\appointment-service\\Dockerfile",
+  "PreviewInSolutionExplorer": false
+}

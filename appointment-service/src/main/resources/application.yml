@@ -1,0 +1,73 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: APPOINTMENT-SERVICE
+
+  datasource:
+    url: jdbc:h2:mem:appointmentdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  h2:
+    console:
+      enabled: true
+
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+
+logging:
+  level:
+    io.micrometer.tracing: DEBUG
+    org.springframework.web: DEBUG
+    io.zipkin.reporter: DEBUG
+
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    show-details: always
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+  circuitbreaker:
+    enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      doctorService:
+        failureRateThreshold: 50
+        waitDurationInOpenState: 60000
+        permittedNumberOfCallsInHalfOpenState: 2
+        slidingWindowSize: 10
+  timelimiter:
+    instances:
+      doctorService:
+        timeoutDuration: 5s

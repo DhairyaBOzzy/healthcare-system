@@ -1,0 +1,22 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: CONFIG-SERVER
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: file:///Users/yourusername/config-repo  # Adjust this path
+      fail-fast: true
+  profiles:
+    active: native
+
+logging:
+  level:
+    io.micrometer.tracing: DEBUG
+    org.springframework.web: DEBUG
+    io.zipkin.reporter: DEBUG
+
+

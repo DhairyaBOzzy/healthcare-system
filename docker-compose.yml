@@ -1,0 +1,131 @@
+
+services:
+  # Config Server Container
+  config-server:
+    container_name: config-server
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    networks:
+      - healthcare-network
+    volumes:
+      - ~/healthcare-system/config-repo:/config-repo  # Mount local config directory into the container
+    environment:
+      - SPRING_PROFILES_ACTIVE=native
+
+  # Eureka Server Container
+  eureka-server:
+    container_name: eureka-server
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    image: eureka-server:latest
+    ports:
+      - "8761:8761"
+    networks:
+      - healthcare-network
+
+  # API Gateway Container
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    image: api-gateway:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - config-server
+      - eureka-server
+    networks:
+      - healthcare-network
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+
+  # Patient Service Container (using H2 database)
+  patient-service:
+    container_name: patient-service
+    build:
+      context: ./patient-service
+      dockerfile: Dockerfile
+    image: patient-service:latest
+    ports:
+      - "8081:8081"
+    depends_on:
+      - config-server
+      - eureka-server
+    networks:
+      - healthcare-network
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:patientdb
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.h2.Driver
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_PROFILES_ACTIVE=default
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://localhost:9411/api/v2/spans 
+
+  # Doctor Service Container
+  doctor-service:
+    container_name: doctor-service
+    build:
+      context: ./doctor-service
+      dockerfile: Dockerfile
+    image: doctor-service:latest
+    ports:
+      - "8082:8082"
+    depends_on:
+      - config-server
+      - eureka-server
+    networks:
+      - healthcare-network
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+
+  # Appointment Service Container
+  appointment-service:
+    container_name: appointment-service
+    build:
+      context: ./appointment-service
+      dockerfile: Dockerfile
+    image: appointment-service:latest
+    ports:
+      - "8083:8083"
+    depends_on:
+      - config-server
+      - eureka-server
+    networks:
+      - healthcare-network
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+
+  # Zipkin Container for Distributed Tracing
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - healthcare-network
+
+  # Database Service (MySQL) - Available for services that need it
+  db:
+    image: mysql
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    networks:
+      - healthcare-network
+
+networks:
+  healthcare-network:
+    driver: bridge

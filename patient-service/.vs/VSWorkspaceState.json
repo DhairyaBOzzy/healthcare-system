@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\patient-service",
+    "\\patient-service\\src",
+    "\\patient-service\\src\\main",
+    "\\patient-service\\src\\main\\java",
+    "\\patient-service\\src\\main\\java\\com",
+    "\\patient-service\\src\\main\\java\\com\\example",
+    "\\patient-service\\src\\main\\java\\com\\example\\patient_service",
+    "\\patient-service\\src\\main\\java\\com\\example\\patient_service\\controller"
+  ],
+  "SelectedNode": "\\patient-service\\Dockerfile",
+  "PreviewInSolutionExplorer": false
+}
